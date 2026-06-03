@@ -30,9 +30,47 @@ select title_id,count(au_id) as no_of_authors from titleauthor group by title_id
 
 --9
 select AVG(royaltyper) as average from titleauthor where au_ord=1 ;
+
 --10
 SELECT tile, price, ytd_sales FROM titles
 WHERE ytd_sales BETWEEN 10000 AND 20000
--- ORDER BY price;
+ORDER BY price;
 
---7
+--11
+select count(au_id) as no_of_authors from authors where city='Menlo Park';
+
+--12
+select state,count(au_id) as no_of_authors from authors group by state order by state;
+
+--13
+select state,au_fname from authors where (select count(au_id) from authors)>2 and au_fname LIKE 's%';
+--                    or
+select state from authors where au_fname LIKE 's%' group by state having count(au_id)>2;
+
+--14
+select REPLACE(REPLACE(tile,' ','.'),'-','*') as modified_title from titles;
+
+--15
+select REPLACE(tile,' ','_') as modified_title1 from titles;
+
+--16
+select 
+   CASE 
+       WHEN CHARINDEX(' ',tile)>0 
+          THEN SUBSTRING(tile,1,CHARINDEX(' ',tile)-1) 
+       ELSE tile 
+    END as first_word
+from titles;
+
+--17
+select DATENAME(MONTH,pubdate) as published_month,count(title_id) from titles group by DATENAME(MONTH,pubdate);
+
+--18
+select t.tile,p.pub_name from titles t INNER JOIN publishers p on p.pub_id=t.pub_id where p.country='USA';
+select * from titles t INNER JOIN publishers p on p.pub_id=t.pub_id;
+
+--19
+select p.pub_name,avg(t.price) from publishers p INNER JOIN titles t on p.pub_id=t.pub_id group by p.pub_name;
+
+--20
+select a.city,count(t.au_id) from authors a INNER JOIN titleauthor t on a.au_id=t.au_id group by a.city;
