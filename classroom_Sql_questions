@@ -1,0 +1,38 @@
+SELECT *from authors;
+SELECT *from publishers;
+SELECT *from titles;
+SELECT *FROM titleauthor;
+-- --1
+ALTER TABLE products ADD tax_rate DECIMAL(5,2);
+UPDATE products SET tax_rate=12.00;
+
+-- --2
+select tile from titles 
+ where tile LIKE '%s' OR tile LIKE '%t';
+
+--3
+ SELECT type from titles where type in ('business','psychology','undecided');
+
+--4
+ select tile from titles where royality<20 and ytd_sales>5000;
+
+ --5
+ select tile from titles where pub_id='0736' ORDER BY ytd_sales ASC;
+
+--6
+select (MAX(royality)-MIN(royality)) as RoyalityDifference from titles where pub_id='0877';
+
+--7
+select au_id,COUNT(title_id) as no_of_books from titleauthor group BY au_id;
+
+--8
+select title_id,count(au_id) as no_of_authors from titleauthor group by title_id;
+
+--9
+select AVG(royaltyper) as average from titleauthor where au_ord=1 ;
+--10
+SELECT tile, price, ytd_sales FROM titles
+WHERE ytd_sales BETWEEN 10000 AND 20000
+-- ORDER BY price;
+
+--7
