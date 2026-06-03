@@ -74,3 +74,77 @@ select p.pub_name,avg(t.price) from publishers p INNER JOIN titles t on p.pub_id
 
 --20
 select a.city,count(t.au_id) from authors a INNER JOIN titleauthor t on a.au_id=t.au_id group by a.city;
+
+--21
+select a.au_fname,ta.tile
+from authors a 
+LEFT JOIN titleauthor t on a.au_id=t.au_id 
+LEFT JOIN titles ta on t.title_id=ta.title_id ;
+
+--22
+select t.tile,p.pub_name,a.au_fname from titles t 
+INNER JOIN publishers p on t.pub_id=p.pub_id 
+INNER JOIN titleauthor ta on t.title_id=ta.title_id 
+INNER JOIN authors a on ta.au_id=a.au_id
+where ta.au_ord=1;
+
+--23
+select p.city,max(t.price) as Price_max from publishers p INNER JOIN titles t on t.pub_id=p.pub_id group by p.city;
+
+--24
+select DISTINCT t.tile from titles t INNER JOIN titleauthor ta on ta.title_id=t.title_id 
+INNER JOIN authors a on ta.au_id=a.au_id where a.city='Menlo Park';
+
+--25
+select p.pub_name from publishers p INNER JOIN titles t on t.pub_id=p.pub_id where DATENAME(YEAR,t.pubdate)=1991;
+
+--26
+select t.tile from titles t INNER JOIN publishers p on p.pub_id=t.pub_id where p.country!='USA';
+
+--27
+select t.tile from titles t INNER JOIN publishers p on t.pub_id=p.pub_id where p.country='USA' OR t.price<5;
+
+--28
+CREATE VIEW 
+vw_titledetails AS 
+select 
+t.tile,
+p.pub_name as publisher,
+year(t.pubdate) as year_of_publishing,
+ISNULL(t.price,0) as price,
+ISNULL(t.type,'Unknown') as type 
+from titles t 
+inner join publishers p on t.pub_id=p.pub_id;
+
+--29
+select distinct p.pub_name from publishers p inner join titles t on p.pub_id=t.pub_id
+inner join titleauthor ta on t.title_id=ta.title_id 
+where ta.au_id IN(
+           select au_id from titleauthor group by au_id having count(title_id)>2
+);
+
+--30
+DELETE from titleauthor 
+where au_id IN (
+    select au_id from authors where au_fname='Dean'
+);
+
+--31
+update titles 
+set price=(
+    select price from titles where title_id='MC2222'
+)
+where title_id='BU1111';
+
+--32
+select tile,pubdate from titles where pubdate >= DATEADD(year,-25,GETDATE());
+
+--33
+select tile from titles where pub_id IN (
+    select pub_id from titles where YEAR(pubdate)=2021
+);
+
+--34
+create view vw_sajdl as 
+select p.pub_name,p.city,COUNT(t.title_id) as no_of_books from publishers p left join titles t on p.pub_id=t.pub_id
+ group by p.pub_name,p.city;
